@@ -193,3 +193,21 @@
 - 列表页链接：新增/查看/修改均带 `?q=&page=`；删除为 POST 表单 + confirm ✅
 - 回归：`/`、`/?q=三体`、`/books/1`、`/books/new`、`/books/1/edit`、styleguide、health、css 全 200；`/books/999`、`/books/999/edit` → 404 ✅
 - **里程碑：六大功能（列表 / 查询 / 详情 / 新增 / 修改 / 删除）全部完成**
+
+---
+
+## 2026-10-13 · 首次 PR 流程：后端线收口（PR #3）
+
+### 流程
+- `gh pr create`：**PR #3「[后端] 数据库与 Express 后台功能开发」**（base `main` ← head `feature/backend-dev`）
+  - 因 Issue #1 清单中「功能逻辑 + 回归测试」将在后续 PR 完成，本 PR 用 `Part of #1` 关联、**不写 Closes**（防提前关闭 Issue）
+- `gh pr merge 3 --merge --delete-branch`：**已合并**（merge commit `67d6717`）+ 远程分支已删
+- 清理：本地 `feature/backend-dev` 已删（was `e4caa24`）；本地 main 同步至 `67d6717`；工作区干净
+
+### 为什么
+- 作业要求第 5 条「完成任务，提交 PR，合并后删除分支」——本 PR 为流程首跑；**自此每次改动均走：新分支 → PR → 合并 → 删分支**
+- 顺序依据：`feature/frontend-dev` 基于 `feature/backend-dev`（merge-base = `e4caa24`）→ 后端 PR 必须先行，前端 PR 后发
+
+### 结果
+- 远程现状：`main @ 67d6717`（含 PR #3 合并提交）；`feature/frontend-dev @ c4f4948` 保留（待发前端 PR，Closes #2）
+- 本地：frontend-dev（工作线）+ main（`67d6717`）双分支，工作干净
