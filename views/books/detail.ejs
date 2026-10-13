@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title: '查看图书信息' }) %>
+
+<!-- 详情卡片：8 字段只读展示（照试卷 p3：两栏 × 4 行，灰底只读框） -->
+<div class="card">
+  <h2 class="card-title">查看图书信息</h2>
+
+  <div class="form-grid">
+    <div class="form-item">
+      <label class="form-label">图书编号</label>
+      <input class="form-input" readonly value="<%= book.bookCode %>">
+    </div>
+    <div class="form-item">
+      <label class="form-label">图书名称</label>
+      <input class="form-input" readonly value="<%= book.bookName %>">
+    </div>
+
+    <div class="form-item">
+      <label class="form-label">图书类型</label>
+      <input class="form-input" readonly value="<%= book.typeName %>">
+    </div>
+    <div class="form-item">
+      <label class="form-label">作者</label>
+      <input class="form-input" readonly value="<%= book.bookAuthor %>">
+    </div>
+
+    <div class="form-item">
+      <label class="form-label">出版社</label>
+      <input class="form-input" readonly value="<%= book.publishPress %>">
+    </div>
+    <div class="form-item">
+      <label class="form-label">是否借阅</label>
+      <input class="form-input" readonly value="<%= book.borrowed === 1 ? '已借阅' : '未借阅' %>">
+    </div>
+
+    <div class="form-item">
+      <label class="form-label">入库人</label>
+      <input class="form-input" readonly value="<%= book.createdBy %>">
+    </div>
+    <div class="form-item">
+      <label class="form-label">入库时间</label>
+      <input class="form-input" readonly value="<%= book.creationDate %>">
+    </div>
+  </div>
+
+  <!-- 底部居中「返回」：带来源查询条件回到列表（不丢查询与页码） -->
+  <div class="form-actions">
+    <a class="btn btn-outline" href="<%= backUrl %>">返回</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

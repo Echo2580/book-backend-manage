@@ -1,0 +1,104 @@
+<%- include('../partials/header', { title: '图书列表' }) %>
+
+<%
+  // 分页 / 跳页链接里保留查询条件的公共片段（q 为空则不带）
+  const qs = q ? 'q=' + encodeURIComponent(q) + '&' : '';
+%>
+
+<!-- 工具区：查询框（按书名模糊查询，条件自动回填）+ 新增按钮（已接通，带来源条件） -->
+<div class="card">
+  <div class="toolbar">
+    <form class="toolbar-left" method="get" action="/">
+      <label for="q">图书名称</label>
+      <input class="form-input" id="q" name="q" type="text" placeholder="请输入图书名称" value="<%= q %>">
+      <button class="btn btn-outline" type="submit">查询</button>
+    </form>
+    <div class="toolbar-right">
+      <a class="btn btn-primary" href="/books/new?<%= qs %>page=<%= page %>">+ 新增图书</a>
+    </div>
+  </div>
+</div>
+
+<!-- 图书列表：8 列，按入库时间降序展示（过滤、排序与分页均由后端完成） -->
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>图书编号</th>
+        <th>图书分类</th>
+        <th>图书名称</th>
+        <th>作者</th>
+        <th>出版社</th>
+        <th>入库时间</th>
+        <th>是否借阅</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (books.length === 0) { %>
+        <tr>
+          <td colspan="8" style="text-align: center; color: var(--c-text-2);">暂无数据</td>
+        </tr>
+      <% } %>
+      <% books.forEach(function (book) { %>
+        <tr>
+          <td><%= book.bookCode %></td>
+          <td><%= book.typeName %></td>
+          <td><%= book.bookName %></td>
+          <td><%= book.bookAuthor %></td>
+          <td><%= book.publishPress %></td>
+          <td><%= book.creationDate %></td>
+          <td>
+            <% if (book.borrowed === 1) { %>
+              <span class="pill pill-blue">已借阅</span>
+            <% } else { %>
+              <span class="pill pill-green">未借阅</span>
+            <% } %>
+          </td>
+          <td class="ops">
+            <!-- 查看 / 修改 / 删除：已全部接通（3.3 / 3.5 / 3.6）；删除走 POST，先 confirm 再提交 -->
+            <a class="link" href="/books/<%= book.bookId %>?<%= qs %>page=<%= page %>">查看</a>
+            <a class="link" href="/books/<%= book.bookId %>/edit?<%= qs %>page=<%= page %>">修改</a>
+            <form method="post" action="/books/<%= book.bookId %>/delete"
+                  onsubmit="return confirm('确定删除该图书信息？')">
+              <button class="link link-danger" type="submit">删除</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<!-- 分页条：上一页 / 页码 / 下一页 / 共 X 页 / 跳页（链接与表单均保留查询条件） -->
+<nav class="pagination">
+  <% if (page > 1) { %>
+    <a class="page-link" href="/?<%= qs %>page=<%= page - 1 %>">上一页</a>
+  <% } else { %>
+    <span class="page-link disabled">上一页</span>
+  <% } %>
+
+  <% for (let p = 1; p <= totalPages; p++) { %>
+    <% if (p === page) { %>
+      <span class="page-num is-active"><%= p %></span>
+    <% } else { %>
+      <a class="page-num" href="/?<%= qs %>page=<%= p %>"><%= p %></a>
+    <% } %>
+  <% } %>
+
+  <% if (page < totalPages) { %>
+    <a class="page-link" href="/?<%= qs %>page=<%= page + 1 %>">下一页</a>
+  <% } else { %>
+    <span class="page-link disabled">下一页</span>
+  <% } %>
+
+  <span class="page-total">共 <%= totalPages %> 页</span>
+
+  <form class="page-jump" method="get" action="/">
+    <% if (q) { %><input type="hidden" name="q" value="<%= q %>"><% } %>
+    到第 <input class="jump-input" type="text" name="page" value="<%= page %>"> 页
+    <button class="btn btn-outline btn-sm" type="submit">确定</button>
+  </form>
+</nav>
+
+<%- include('../partials/footer') %>

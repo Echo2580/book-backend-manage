@@ -15,6 +15,9 @@ app.use(express.urlencoded({ extended: false }));
 // 静态资源（CSS / JS）：项目根下的 public/
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// 业务路由：图书模块（列表 / 查询 / 详情 / 新增 / 修改 / 删除）
+app.use('/', require('./routes/books'));
+
 // 探活接口：GET /health → 200 {"status":"ok"}
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'book-backend-manage' });
