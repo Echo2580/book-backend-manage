@@ -24,7 +24,14 @@
 
 ## 快速开始
 
-（后端骨架完成后补全）
+```bash
+npm install              # 安装依赖
+cp .env.example .env     # 复制环境变量模板，按实际环境填写数据库账号密码
+npm start                # 启动服务 → http://localhost:3001
+```
+
+- 数据库初始化（首次/需重灌时执行）：`mysql -u <账号> -p --default-character-set=utf8mb4 < sql/init.sql`
+- 探活接口：`GET http://localhost:3001/health` → `{"status":"ok","service":"book-backend-manage"}`
 
 ## 项目约定
 
