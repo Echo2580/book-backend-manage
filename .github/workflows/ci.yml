@@ -1,0 +1,58 @@
+# .github/workflows/ci.yml — 回归测试流水线
+# 触发：向 main 的 push / 所有 PR
+# 流程：起 MySQL 8 服务（带健康检查）→ 检出代码 → Node 22 → 导入 init.sql → npm ci → npm test
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: 回归测试
+    runs-on: ubuntu-latest
+
+    # 测试库：MySQL 8 临时容器（账号密码仅用于 CI，与本地 .env 无关）
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: book_manage
+          MYSQL_USER: zhy
+          MYSQL_PASSWORD: 123456
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    # 应用程序连库配置：经环境变量注入（src/db.js 支持 process.env 覆盖）
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: zhy
+      DB_PASSWORD: 123456
+      DB_NAME: book_manage
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v5
+
+      - name: 安装 Node.js 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 导入数据库初始化脚本（建表 + 种子）
+        run: mysql --host=127.0.0.1 --port=3306 --user=root --password=root --default-character-set=utf8mb4 < sql/init.sql
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 运行回归测试
+        run: npm test
