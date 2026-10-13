@@ -211,3 +211,37 @@
 ### 结果
 - 远程现状：`main @ 67d6717`（含 PR #3 合并提交）；`feature/frontend-dev @ c4f4948` 保留（待发前端 PR，Closes #2）
 - 本地：frontend-dev（工作线）+ main（`67d6717`）双分支，工作干净
+
+---
+
+## 2026-10-13 · 前端线 PR 收口（PR #4）
+
+### 流程
+- `gh pr create`：**PR #4「[前端] EJS 页面与交互实现」**（base `main` ← head `feature/frontend-dev`），正文列 3.0~3.6 内容清单 + `Closes #2`
+- `gh pr merge 4 --merge --delete-branch`：**已合并**（merge commit `e39b9c4`）+ 远程分支已删
+- 本地清理：切 `main` → `git pull`（main 前进至 `e39b9c4`）→ 本地 `feature/frontend-dev` 已删
+- 结果：远程仅剩 `main`；Issue #2 随合并自动关闭
+
+### 为什么
+- 前端线内容 = Issue #2 全清单 → `Closes #2` 完整闭环；main 只经 PR 合入（流程常态化）
+
+---
+
+## 2026-10-13 · Step 4：回归测试 + GitHub Actions CI
+
+### 新增/变更
+- `tests/regression.test.js`（新增，17 用例）：node:test + supertest，直接引入 `src/app`（应用与监听分离 → 不占 3001 端口、无需起服务）
+  - 覆盖：`/health`｜列表（5 条/页、降序、第 2 页、越界收敛、非法页码）｜模糊查询（回填、`%` 转义）｜提示条（success/error）｜静态资源｜详情（8 字段、返回带条件、404×2）｜新增（渲染/校验失败/成功入库）｜修改（预填/成功+只读字段不可改/校验失败/404）｜删除（成功/不存在）
+  - 测试数据自清理：统一 `TEST-` 前缀，`before`/`after` 各清理一次（幂等）；种子数据不受影响
+- `package.json`：`"test": "node --test"`
+- `.github/workflows/ci.yml`（新增）：MySQL 8 service 容器（含 health-check）→ checkout → Node 22（npm 缓存）→ 导入 `sql/init.sql` → `npm ci` → `npm test`；连库配置经环境变量注入（对接 `src/db.js` 的 `process.env` 覆盖，无硬编码密码）
+
+### 为什么
+- 作业要求第 6 条「GitHub Actions 回归测试」→ 本地可跑 + CI 自动跑，双保险
+- 测试引 `src/app`（不起 server）是 Step 2 分离应用与监听时预留的设计；数据自清理保证本地/CI 反复跑不污染
+- CI 用临时 MySQL 容器 + 重新导入 `init.sql`：与环境解耦，每次都是干净种子
+
+### 实测结果
+- 本地 `npm test`：**17/17 通过**（~1s）；跑完 DB 复核：10 条 / 0 残留 ✅
+- 首跑 1 处断言修正：详情页「返回」链接经 EJS 转义后 `&` → `&amp;`（测试断言问题，非业务缺陷）
+- CI：随 PR #5 首次触发（结果见 Actions 页）
