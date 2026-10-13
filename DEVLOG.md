@@ -245,3 +245,44 @@
 - 本地 `npm test`：**17/17 通过**（~1s）；跑完 DB 复核：10 条 / 0 残留 ✅
 - 首跑 1 处断言修正：详情页「返回」链接经 EJS 转义后 `&` → `&amp;`（测试断言问题，非业务缺陷）
 - CI：随 PR #5 首次触发（结果见 Actions 页）
+
+---
+
+## 2026-10-13 · Step 5：收尾（README 完善 + 全流程复盘 + 交付核对）
+
+### 新增/变更
+- `README.md` 重排完善：CI 徽章、目录结构、快速开始细化（依赖 / 环境变量 / 数据库初始化 / 启动）、「运行测试」（17 用例说明）与「持续集成」两节
+- `DEVLOG.md`：本条目（收尾记录 + 全流程复盘 + 对照 `quiz07.md` 的交付核对）
+
+### 为什么
+- README 是仓库第一入口：补齐「装什么、怎么跑、怎么测」，让验收方零上下文即可启动
+- 交付前对照作业要求逐条自查，避免遗漏
+
+### 全流程复盘（本作业从头到尾）
+1. **需求**：2016 Java 试卷（图书借阅系统·后台）→ 保留业务功能与数据库设计，技术栈换为 Express + EJS + MySQL（服务端渲染）
+2. **基建**：MySQL 8.0.44（`D:\mysql`，服务化 MySQL80）；GitHub 仓库 `Echo2580/book-backend-manage`（public）；后端 Issue #1 + 前端 Issue #2
+3. **功能**：`sql/init.sql`（建表 + 种子）→ Express 骨架 → 六大功能（列表 / 查询 / 详情 / 新增 / 修改 / 删除）
+4. **测试与 CI**：node:test + supertest 回归测试（17 用例）；GitHub Actions（MySQL 8 service + `init.sql` + `npm test`）
+5. **流程痕迹**（全部走 Issue → 分支 → PR → 合并 → 删分支）：
+
+| PR | 分支 | 关联 | 结果 |
+|---|---|---|---|
+| #3 | feature/backend-dev | Part of #1 | 合并 `67d6717`、分支已删 |
+| #4 | feature/frontend-dev | Closes #2 | 合并 `e39b9c4`、分支已删 |
+| #5 | feature/tests-ci | Closes #1 | 合并 `d57d482`、分支已删 |
+
+   - CI 双绿：PR #5 触发 **55s** ✅；main 推送触发一次通过 ✅
+
+### 交付核对（对照 `quiz07.md` 逐条）
+| 要求 | 落地情况 |
+|---|---|
+| 1. 使用 Qwen Code 开发 | ✅ 以 `QWEN.md` 为项目上下文规范，由 AI 助手承担实现（落地方式经确认） |
+| 2. Express 前后端 / Pixso 页面 / MySQL | ✅ Express + EJS 服务端渲染；页面方案据 Pixso 参考素材提炼；MySQL 8.0 |
+| 3. git 版本管理 | ✅ 13 次提交、3 个 PR；分支策略 feature/* → main |
+| 4. GitHub 托管 + 前后端双 Issue | ✅ Issue #1 / #2 均已随 PR 闭环关闭 |
+| 5. 完成任务 → PR → 合并 → 删分支 | ✅ PR #3 / #4 / #5 全部按此执行 |
+| 6. Actions 回归测试 | ✅ 17 用例，PR 与 main 全部跑绿 |
+
+### 实测结果
+- README 内命令逐条核对：`npm install` / `npm test` / `npm start`（3001）/ `mysql … < sql/init.sql` 均为当前可复现的真实命令
+- 收尾 PR：CI 随 PR 再次触发（结果见 Actions 页）
