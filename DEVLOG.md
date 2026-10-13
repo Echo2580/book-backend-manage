@@ -88,3 +88,25 @@
 - 本地起服（3001）：`/styleguide.html` → 200（8.9KB，text/html）；`/css/style.css` → 200（10.4KB，text/css）；`/health` → 200 复测正常
 - 结构抽查：页面关键组件类命中 9 处、CSS 关键类命中 32 处；`var()` 引用与变量定义逐一对齐、无笔误
 - 浏览器最终验收：`npm start` → `http://localhost:3001/styleguide.html`（大哥过目后提交）
+
+---
+
+## 2026-10-13 · Step 3.1：图书列表页
+
+### 新增
+- `views/partials/header.ejs` / `views/partials/footer.ejs`：公共头尾（页头、样式引入、提示位预留）
+- `views/books/list.ejs`：列表页模板（工具区 + 8 列表格 + 分页条）
+- `src/routes/books.js`：图书路由（已实现 `GET /` 列表；3.2~3.6 逐个补齐）
+- `src/app.js`：挂载业务路由 `app.use('/', booksRouter)`
+
+### 为什么
+- 列表页核心查询：`book_info` LEFT JOIN `book_type` 取分类名；`ORDER BY creationTime DESC, bookId DESC`；`DATE_FORMAT` 输出 yyyy-MM-dd；`LIMIT 5 OFFSET n` 分页
+- 页码健壮性：缺省/非法 → 第 1 页；越界 → 收敛到最后一页（不会出现空页）
+- 模板拆分为「公共头尾 + 页面」两级，3.2~3.6 页面复用同一骨架
+- 工具区与操作列按最终形态摆位：查询（3.2）、新增（3.4）、查看/修改/删除（3.3/3.5/3.6）逐个接通
+
+### 实测结果
+- `GET /` → 200：每页 5 行、共 2 页、降序首条「解忧杂货店 2026-10-13」、胶囊 5 个、「上一页」禁用 ✅
+- `GET /?page=2` → 200：当前页 2、「下一页」禁用 ✅；`?page=abc` → 回落第 1 页 ✅；`?page=99` → 收敛第 2 页 ✅
+- HTML 抽查：8 列表头顺序、行数据与数据库降序结果一致、跳页表单回填当前页 ✅
+- 回归：`/styleguide.html`、`/css/style.css`、`/health` 均 200 ✅

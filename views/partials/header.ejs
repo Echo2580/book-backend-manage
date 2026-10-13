@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · 图书借阅管理系统</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- 页头（全站公共） -->
+<header class="page-header">
+  <div class="container">
+    <h1 class="title">图书借阅管理系统</h1>
+  </div>
+</header>
+
+<main class="container">
+  <%# 提示位：新增/修改/删除后跳回列表页显示结果（3.4 起使用） %>
+  <% if (locals.message) { %>
+    <div class="alert alert-<%= locals.messageType || 'success' %>"><%= locals.message %></div>
+  <% } %>
