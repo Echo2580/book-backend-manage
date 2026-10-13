@@ -1,5 +1,5 @@
 // src/routes/books.js — 图书相关路由
-// 进度：3.1 列表 / 3.2 模糊查询 已实现；3.3 详情 / 3.4 新增 / 3.5 修改 / 3.6 删除 逐个接通。
+// 进度：3.1 列表 / 3.2 模糊查询 / 3.3 详情 已实现；3.4 新增 / 3.5 修改 / 3.6 删除 逐个接通。
 const express = require('express');
 const pool = require('../db');   // MySQL 连接池（src/db.js 统一出口）
 
@@ -65,6 +65,59 @@ router.get('/', async (req, res, next) => {
 
     // 6. 渲染列表页模板（q 回传给模板做条件回填）
     res.render('books/list', { title: '图书列表', books, page, totalPages, q });
+  } catch (err) {
+    next(err);   // 出错交给 Express 统一处理，日志里能看到原因
+  }
+});
+
+// ---------------------------------------------------------------
+// GET /books/:id —— 图书详情页（只读 8 字段）
+//   参数：?q=关键词 / ?page=N（从列表页带过来，「返回」时原样带回）
+//   规则：id 非正整数或查不到 → 404「图书不存在」
+//   ⚠️ 注册顺序：GET /books/new（3.4 新增页）必须放在本路由【之前】，
+//      否则 "new" 会被当成 :id 匹配到这里
+// ---------------------------------------------------------------
+router.get('/books/:id', async (req, res, next) => {
+  try {
+    // 1. 校验 id：非正整数直接 404
+    const id = parseInt(req.params.id, 10);
+    if (!Number.isInteger(id) || id < 1) {
+      return res.status(404).send('图书不存在');
+    }
+
+    // 2. 联表查询（分类名 + 入库时间格式化为 yyyy-MM-dd）
+    const [rows] = await pool.query(
+      `SELECT
+         b.bookId,
+         b.bookCode,
+         b.bookName,
+         t.typeName,
+         b.bookAuthor,
+         b.publishPress,
+         b.borrowed,
+         b.createdBy,
+         DATE_FORMAT(b.creationTime, '%Y-%m-%d') AS creationDate
+       FROM book_info b
+       LEFT JOIN book_type t ON b.bookType = t.id
+       WHERE b.bookId = ?`,
+      [id],
+    );
+    if (rows.length === 0) {
+      return res.status(404).send('图书不存在');
+    }
+
+    // 3. 构造「返回」链接：带上来源查询条件（q / page），回列表不丢状态
+    //    URLSearchParams 自动做百分号编码（中文安全）
+    const back = new URLSearchParams();
+    const q = String(req.query.q ?? '').trim();
+    const page = parseInt(req.query.page, 10);
+    if (q) back.set('q', q);
+    if (Number.isInteger(page) && page >= 1) back.set('page', String(page));
+    const query = back.toString();
+    const backUrl = query ? `/?${query}` : '/';
+
+    // 4. 渲染详情页
+    res.render('books/detail', { title: '查看图书信息', book: rows[0], backUrl });
   } catch (err) {
     next(err);   // 出错交给 Express 统一处理，日志里能看到原因
   }

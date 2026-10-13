@@ -56,8 +56,8 @@
             <% } %>
           </td>
           <td class="ops">
-            <!-- 三个链接先摆位，3.3 / 3.5 / 3.6 逐个接通 -->
-            <a class="link" href="/books/<%= book.bookId %>">查看</a>
+            <!-- 「查看」已接通（3.3，带来源查询条件）；「修改」「删除」3.5 / 3.6 接通 -->
+            <a class="link" href="/books/<%= book.bookId %>?<%= qs %>page=<%= page %>">查看</a>
             <a class="link" href="/books/<%= book.bookId %>/edit">修改</a>
             <a class="link link-danger" href="/books/<%= book.bookId %>/delete"
                onclick="return confirm('确定删除该图书信息？')">删除</a>

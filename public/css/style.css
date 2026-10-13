@@ -305,6 +305,14 @@ a:hover { text-decoration: underline; }
   gap: 0 24px;
 }
 
+/* 底部操作按钮行（详情「返回」；表单页「保存 / 返回」居中） */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 /* ---------- 十、组件 8：提示条（成功 / 失败） ---------- */
 .alert {
   padding: 10px 16px;
