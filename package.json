@@ -1,0 +1,17 @@
+{
+  "name": "book-backend-manage",
+  "version": "1.0.0",
+  "description": "图书借阅系统后台管理（Express + EJS + MySQL 服务端渲染实现）",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test tests/"
+  },
+  "keywords": [
+    "express",
+    "ejs",
+    "mysql"
+  ],
+  "author": "zhy",
+  "license": "MIT"
+}
