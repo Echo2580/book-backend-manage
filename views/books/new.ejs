@@ -1,0 +1,65 @@
+<%- include('../partials/header', { title: '新增图书信息' }) %>
+
+<!-- 新增表单：两栏 × 4 行（照试卷 p4）；必填项挂 HTML5 required，浏览器原生拦截 -->
+<div class="card">
+  <h2 class="card-title">新增图书信息</h2>
+
+  <form method="post" action="/books">
+    <!-- 来源查询条件（「返回」与失败回显都不丢） -->
+    <input type="hidden" name="q" value="<%= q %>">
+    <input type="hidden" name="page" value="<%= page %>">
+
+    <div class="form-grid">
+      <div class="form-item">
+        <label class="form-label" for="bookCode">图书编号<span class="required">*</span></label>
+        <input class="form-input" id="bookCode" name="bookCode" type="text" value="<%= form.bookCode %>" required>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="bookName">图书名称<span class="required">*</span></label>
+        <input class="form-input" id="bookName" name="bookName" type="text" value="<%= form.bookName %>" required>
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="bookType">图书类型<span class="required">*</span></label>
+        <select class="form-select" id="bookType" name="bookType" required>
+          <option value="">——请选择——</option>
+          <% types.forEach(function (t) { %>
+            <option value="<%= t.id %>" <%= String(form.bookType) === String(t.id) ? 'selected' : '' %>><%= t.typeName %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="bookAuthor">作者</label>
+        <input class="form-input" id="bookAuthor" name="bookAuthor" type="text" value="<%= form.bookAuthor %>">
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="publishPress">出版社</label>
+        <input class="form-input" id="publishPress" name="publishPress" type="text" value="<%= form.publishPress %>">
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="borrowed">是否借阅<span class="required">*</span></label>
+        <select class="form-select" id="borrowed" name="borrowed" required>
+          <option value="0" <%= String(form.borrowed) === '0' ? 'selected' : '' %>>未借阅</option>
+          <option value="1" <%= String(form.borrowed) === '1' ? 'selected' : '' %>>已借阅</option>
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="createdBy">入库人<span class="required">*</span></label>
+        <input class="form-input" id="createdBy" name="createdBy" type="text" value="<%= form.createdBy %>" required>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="creationTime">入库时间<span class="required">*</span></label>
+        <input class="form-input" id="creationTime" name="creationTime" type="date" value="<%= form.creationTime %>" required>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">保存</button>
+      <a class="btn btn-outline" href="<%= backUrl %>">返回</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

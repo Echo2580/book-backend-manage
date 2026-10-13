@@ -154,9 +154,10 @@ a:hover { text-decoration: underline; }
 .data-table tbody tr:nth-child(odd)  { background: var(--c-surface); }
 .data-table tbody tr:nth-child(even) { background: var(--c-zebra); }
 .data-table tbody tr:hover           { background: #EFF4FB; }
-/* 操作列：文字链接不换行，间距 14px */
+/* 操作列：文字链接不换行，间距 14px（删除按钮外包了表单，需内联化） */
 .data-table .ops { white-space: nowrap; }
 .data-table .ops .link + .link { margin-left: 14px; }
+.data-table .ops form { display: inline; margin-left: 14px; }
 
 /* ---------- 六、组件 4：胶囊标签 ---------- */
 .pill {

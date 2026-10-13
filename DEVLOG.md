@@ -154,3 +154,42 @@
 - 闭环：列表（含查询态）→「查看」→ 详情 →「返回」→ 查询条件与页码原样还在（查询框回填「三体」确认）✅
 - 借阅状态逻辑：bookId=9（时间简史，borrowed=1）→ 显示「已借阅」✅
 - 回归：`/`、`/?q=三体`、`/styleguide.html`、`/css/style.css`、`/health` 均 200 ✅
+
+---
+
+## 2026-10-13 · Step 3.4 / 3.5 / 3.6：新增 / 修改 / 删除（六大功能齐）
+
+> 说明：三节按大哥指示一次完成；每节仍逐功能实现、逐功能实测。
+
+### 新增/变更
+- `src/routes/books.js`：
+  - 新增 `GET /books/new`（⚠️ 注册在 `GET /books/:id` 之前）：类型下拉来自 `book_type`；默认值预填（入库人=系统管理员、入库时间=今天、是否借阅=未借阅）
+  - 新增 `POST /books`：后端必填校验（6 项）+ 下拉/日期合法性校验 → INSERT（`publishDate` 表单无此字段，默认 `CURDATE()`）→ 成功跳 `/?msg=created`；失败回显 + 红提示（写明缺哪些项）
+  - 新增 `GET /books/:id/edit`：预填现有值；入库人/入库时间只读展示（灰底）
+  - 新增 `POST /books/:id`（保存修改）：校验 → UPDATE（入库人/入库时间**不更新**；`lastUpdatetime = NOW()`）→ 成功跳 `/?msg=updated`；失败回显 + 红提示
+  - 新增 `POST /books/:id/delete`：DELETE → 成功/失败均跳回列表显示结果提示
+  - 列表页 `GET /` 支持 `?msg=`（created/updated/deleted/error）→ 顶部提示条（复用 header.ejs 预留的 message 位）
+  - 抽出模块内两个小工具：`buildBackUrl()`（返回链接带 q/page，详情/新增/修改共用；详情页同步改用）+ `parsePage()`
+- `views/books/new.ejs`（新增）：两栏 × 4 行表单；必填 6 项红星 + HTML5 `required`（浏览器原生拦截）；类型下拉 8 项 +「——请选择——」；底部 [保存][返回]
+- `views/books/edit.ejs`（新增）：字段同新增；入库人/入库时间为 readonly 灰底、不提交（连 name 都不带）
+- `views/books/list.ejs`：「＋ 新增图书」「修改」链接补来源条件（`?q=&page=`）；「删除」改为 `POST` 表单提交（`onsubmit` confirm 保留「确定删除该图书信息？」）
+- `public/css/style.css`：`.ops form` 内联化（删除按钮包了表单后仍与链接同排）
+
+### 为什么
+- 试卷 p4–p6：新增/修改必填校验 + 成功失败都提示 + 保存后跳回列表；删除先确认再提交、结果提示
+- 提示走设计方案组件 8（页顶提示条）而非试卷的 IE alert 弹窗——方案已拍板；成功经 `?msg=created/updated/deleted` 跳转显示（刷新页面不会重复提交表单）
+- `?q=&page=` 在新增/修改表单里走 hidden 回传：校验失败重渲染时「返回」仍能回到原查询态
+- 删除改 POST：QWEN.md 路由表定的是 `POST /books/:id/delete`，语义规范（链接 GET 删除可能被预取误触）
+
+### 实测结果
+- `GET /books/new` → 200：6 颗红星、下拉「——请选择——」+ 8 类、预填（系统管理员 / 2026-10-13 / 未借阅选中）✅
+- 新增正常流：POST → 302 `/?msg=created` → 列表绿条「新增成功！」；DB 核对（测试记录：字段全对、`creationTime` 2026-10-13、`publishDate` 默认当天、`lastUpdatetime` NULL）✅
+- 新增校验流：缺名称+类型 → 400 + 红条「新增失败！请检查：图书名称、图书类型」+ 回显 ✅
+- `GET /books/1/edit` → 200：预填全对（BK0001/三体/小说选中/刘慈欣/重庆出版社/未借阅）、入库人/入库时间 readonly 且无 name ✅
+- 修改正常流：POST → 302 `/?msg=updated` → 绿条「修改成功！」；DB 核对：name/type/borrowed 已更新，**createdBy/creationTime 未变**，`lastUpdatetime` 记录修改时间 ✅
+- 修改校验流：缺名称 → 400 + 红条「修改失败！请检查：图书名称」✅
+- 删除正常流：POST → 302 `/?msg=deleted` → 绿条「删除成功！」；DB：记录已删、总数回 10（测试数据清理干净）✅
+- 删除失败流：重复删除 → `/?msg=error` + 红条「操作失败，请重试！」✅
+- 列表页链接：新增/查看/修改均带 `?q=&page=`；删除为 POST 表单 + confirm ✅
+- 回归：`/`、`/?q=三体`、`/books/1`、`/books/new`、`/books/1/edit`、styleguide、health、css 全 200；`/books/999`、`/books/999/edit` → 404 ✅
+- **里程碑：六大功能（列表 / 查询 / 详情 / 新增 / 修改 / 删除）全部完成**

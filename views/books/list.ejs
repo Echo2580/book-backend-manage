@@ -5,7 +5,7 @@
   const qs = q ? 'q=' + encodeURIComponent(q) + '&' : '';
 %>
 
-<!-- 工具区：查询框（按书名模糊查询，条件自动回填）+ 新增按钮（3.4 接通） -->
+<!-- 工具区：查询框（按书名模糊查询，条件自动回填）+ 新增按钮（已接通，带来源条件） -->
 <div class="card">
   <div class="toolbar">
     <form class="toolbar-left" method="get" action="/">
@@ -14,7 +14,7 @@
       <button class="btn btn-outline" type="submit">查询</button>
     </form>
     <div class="toolbar-right">
-      <a class="btn btn-primary" href="/books/new">+ 新增图书</a>
+      <a class="btn btn-primary" href="/books/new?<%= qs %>page=<%= page %>">+ 新增图书</a>
     </div>
   </div>
 </div>
@@ -56,11 +56,13 @@
             <% } %>
           </td>
           <td class="ops">
-            <!-- 「查看」已接通（3.3，带来源查询条件）；「修改」「删除」3.5 / 3.6 接通 -->
+            <!-- 查看 / 修改 / 删除：已全部接通（3.3 / 3.5 / 3.6）；删除走 POST，先 confirm 再提交 -->
             <a class="link" href="/books/<%= book.bookId %>?<%= qs %>page=<%= page %>">查看</a>
-            <a class="link" href="/books/<%= book.bookId %>/edit">修改</a>
-            <a class="link link-danger" href="/books/<%= book.bookId %>/delete"
-               onclick="return confirm('确定删除该图书信息？')">删除</a>
+            <a class="link" href="/books/<%= book.bookId %>/edit?<%= qs %>page=<%= page %>">修改</a>
+            <form method="post" action="/books/<%= book.bookId %>/delete"
+                  onsubmit="return confirm('确定删除该图书信息？')">
+              <button class="link link-danger" type="submit">删除</button>
+            </form>
           </td>
         </tr>
       <% }); %>
