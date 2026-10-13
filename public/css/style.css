@@ -1,0 +1,339 @@
+/* =============================================================
+   style.css — 全局样式基建（Step 3.0）
+   内测07 · 图书借阅管理系统后台（Express + EJS + MySQL）
+   -------------------------------------------------------------
+   目录：
+     一、CSS 变量（色板 / 圆角 / 阴影 / 字体）
+     二、基础重置与排版（body / 链接 / 容器 / 卡片）
+     三、组件 1  页头            .page-header
+     四、组件 2  工具区          .toolbar
+     五、组件 3  数据表格        .table-wrap / .data-table
+     六、组件 4  胶囊标签        .pill
+     七、组件 5  按钮 + 文字链接 .btn / .link
+     八、组件 6  分页条          .pagination
+     九、组件 7  表单            .form-item / .form-input / .form-select
+     十、组件 8  提示条          .alert
+     十一、组件 9 删除确认        原生 confirm（无 CSS）
+   色值依据：handoff/design-review/design-plan-v1.md（Pixso 参考精确采样）
+   验收页：public/styleguide.html
+   ============================================================= */
+
+/* ---------- 一、CSS 变量 ---------- */
+:root {
+  /* 主色调 */
+  --c-primary:   #142D55;   /* 主色：页头 / 大标题 / 聚焦描边 */
+  --c-primary-2: #1B3864;   /* 主色辅助：文字链接 / 悬停 */
+  --c-accent:    #FFCB4A;   /* 强调：主按钮 / 当前页码（黄底配深蓝字） */
+  --c-accent-2:  #F0B429;   /* 强调色悬停（加深一档） */
+
+  /* 底与面 */
+  --c-bg:      #F5F7FA;     /* 页面底 */
+  --c-surface: #FFFFFF;     /* 卡片 / 表格底 */
+  --c-thead:   #F6F6F6;     /* 表头底 */
+  --c-line:    #E8EBF0;     /* 分割线 / 描边 */
+  --c-zebra:   #F8FAFC;     /* 斑马行（隔行变色） */
+
+  /* 文字 */
+  --c-text:   #1F2329;      /* 正文 */
+  --c-text-2: #8E8E99;      /* 次要文字 */
+
+  /* 语义色（胶囊标签 / 提示条，浅底 + 深字） */
+  --c-success: #1DCC88;  --c-success-bg: #E3F8EF;  --c-success-text: #0B8A5C;
+  --c-info:    #51C0FF;  --c-info-bg:    #E8F4FE;  --c-info-text:    #1478B8;
+  --c-danger:  #E5484D;  --c-danger-bg:  #FDECEC;  --c-danger-text:  #C63B3F;
+
+  /* 形状与阴影 */
+  --radius-card: 8px;       /* 卡片 / 按钮 */
+  --radius-input: 6px;      /* 输入框 */
+  --shadow-card: 0 1px 3px rgba(20, 45, 85, .08);
+
+  /* 字体栈（系统字体，零依赖） */
+  --font: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
+/* ---------- 二、基础重置与排版 ---------- */
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font: 14px/1.6 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, p { margin: 0; }
+
+/* 正文链接：深蓝、无下划线；悬停加下划线 */
+a { color: var(--c-primary-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 页面容器：居中、留白 */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* 白色卡片：详情 / 表单等正文内容的容器 */
+.card {
+  background: var(--c-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+.card + .card { margin-top: 16px; }
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ---------- 三、组件 1：页头 ---------- */
+.page-header {
+  background: var(--c-primary);
+  color: #FFFFFF;
+  padding: 16px 0;
+}
+.page-header .container { padding-top: 0; padding-bottom: 0; }
+.page-header .title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+.page-header a { color: #FFFFFF; }
+
+/* ---------- 四、组件 2：工具区（查询框 + 操作按钮） ---------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.toolbar-left .form-input {
+  width: 220px;
+  max-width: none;
+}
+.toolbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* ---------- 五、组件 3：数据表格 ---------- */
+/* 外层白卡：圆角 + 轻阴影，内层表格撑满 */
+.table-wrap {
+  background: var(--c-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;              /* 表格字号 13px */
+}
+.data-table th {
+  background: var(--c-thead);
+  color: var(--c-text);
+  font-weight: 600;
+  text-align: left;
+  padding: 11px 12px;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 12px;                /* 行高约 44px */
+  color: var(--c-text);
+}
+/* 斑马行（隔行变色）+ 悬停高亮 */
+.data-table tbody tr:nth-child(odd)  { background: var(--c-surface); }
+.data-table tbody tr:nth-child(even) { background: var(--c-zebra); }
+.data-table tbody tr:hover           { background: #EFF4FB; }
+/* 操作列：文字链接不换行，间距 14px */
+.data-table .ops { white-space: nowrap; }
+.data-table .ops .link + .link { margin-left: 14px; }
+
+/* ---------- 六、组件 4：胶囊标签 ---------- */
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.pill-green { background: var(--c-success-bg); color: var(--c-success-text); }  /* 未借阅 */
+.pill-blue  { background: var(--c-info-bg);    color: var(--c-info-text); }     /* 已借阅 */
+.pill-red   { background: var(--c-danger-bg);  color: var(--c-danger-text); }   /* 异常 / 已删除 */
+.pill-gray  { background: #F0F1F4;             color: var(--c-text-2); }        /* 中性占位 */
+
+/* ---------- 七、组件 5：按钮 + 文字链接 ---------- */
+.btn {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: var(--radius-card);
+  border: 1px solid transparent;
+  font: 14px/1.4 var(--font);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { text-decoration: none; }
+
+.btn-primary {                  /* 主按钮：明黄底 + 深蓝字 */
+  background: var(--c-accent);
+  color: var(--c-primary);
+  border-color: #E0AE35;
+}
+.btn-primary:hover { background: var(--c-accent-2); }
+
+.btn-outline {                  /* 次按钮：白底描边 */
+  background: var(--c-surface);
+  color: var(--c-primary);
+  border-color: var(--c-line);
+}
+.btn-outline:hover { border-color: var(--c-primary); }
+
+.btn-danger {                   /* 危险按钮：红底白字 */
+  background: var(--c-danger);
+  color: #FFFFFF;
+}
+.btn-danger:hover { background: #C93B40; }
+
+.btn-sm { padding: 4px 12px; font-size: 12px; }   /* 小号（跳页确定等） */
+
+/* 表格内操作文字链接：查看 / 修改（深蓝）、删除（红） */
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: var(--c-primary-2);
+}
+.link:hover { text-decoration: underline; }
+.link-danger { color: var(--c-danger); }
+
+/* ---------- 八、组件 6：分页条 ---------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.pagination a {
+  display: inline-block;
+  min-width: 30px;
+  padding: 4px 8px;
+  border-radius: var(--radius-input);
+  text-align: center;
+  color: var(--c-text);
+}
+.pagination a:hover { background: #EEF3FA; text-decoration: none; }
+.pagination .page-num.is-active {           /* 当前页：黄底深蓝字 */
+  background: var(--c-accent);
+  color: var(--c-primary);
+  font-weight: 600;
+}
+.pagination .disabled { color: #B9BDC7; cursor: not-allowed; }
+.pagination .disabled:hover { background: none; }
+.pagination .page-total { color: var(--c-text-2); margin: 0 4px; }
+.pagination .page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--c-text-2);
+}
+.jump-input {
+  width: 48px;
+  padding: 4px 6px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-input);
+  font: inherit;
+  text-align: center;
+  outline: none;
+}
+.jump-input:focus { border-color: var(--c-primary); }
+
+/* ---------- 九、组件 7：表单 ---------- */
+.form-item { margin-bottom: 18px; }
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--c-text);
+}
+.form-label .required { color: var(--c-danger); margin-left: 3px; }  /* 必填红星号 */
+
+.form-input,
+.form-select {
+  width: 100%;
+  max-width: 420px;
+  padding: 9px 12px;
+  font: 14px/1.4 var(--font);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.form-input::placeholder { color: #B9BDC7; }
+.form-input:focus,
+.form-select:focus {                          /* 聚焦：深蓝描边 + 光圈 */
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(20, 45, 85, .12);
+}
+.form-input[readonly] {                       /* 只读字段：灰底（入库人 / 入库时间） */
+  background: #F2F3F5;
+  color: var(--c-text-2);
+  cursor: not-allowed;
+}
+.form-input[readonly]:focus { border-color: var(--c-line); box-shadow: none; }
+
+/* 双列表单（详情 / 新增 / 修改页用） */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 24px;
+}
+
+/* ---------- 十、组件 8：提示条（成功 / 失败） ---------- */
+.alert {
+  padding: 10px 16px;
+  border-radius: var(--radius-card);
+  border: 1px solid transparent;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.alert:last-child { margin-bottom: 0; }
+.alert-success {
+  background: var(--c-success-bg);
+  color: var(--c-success-text);
+  border-color: #BFEBD8;
+}
+.alert-error {
+  background: var(--c-danger-bg);
+  color: var(--c-danger-text);
+  border-color: #F5C6C8;
+}
+
+/* ---------- 十一、组件 9：删除确认 ----------
+   使用浏览器原生 confirm，无需任何 CSS。
+   页面上的用法（列表页操作列「删除」）：
+     <a class="link link-danger" href="/books/3/delete"
+        onclick="return confirm('确定删除该图书信息？')">删除</a>
+   确认框文案按试卷要求：「确定删除该图书信息？」 */
+
+/* ---------- 响应式（窄屏兜底） ---------- */
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .toolbar-left .form-input { width: 160px; }
+}

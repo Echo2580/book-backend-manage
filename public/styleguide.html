@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>组件一览 · 图书借阅管理系统</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 本页为「样式验收页」的局部布局，不属于系统组件，仅供 Step 3.0 过目 */
+    .demo-h2 { font-size: 16px; font-weight: 600; margin: 32px 0 6px; }
+    .demo-desc { font-size: 12px; color: var(--c-text-2); margin-bottom: 12px; }
+    .demo-card {
+      background: var(--c-surface);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 20px 24px;
+    }
+    .demo-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .swatch { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--c-text-2); }
+    .swatch i {
+      width: 18px; height: 18px; border-radius: 4px; display: inline-block;
+      border: 0.5px solid rgba(0, 0, 0, .08);
+    }
+  </style>
+</head>
+<body>
+
+<!-- 组件 1：页头（顶部横条即示范） -->
+<header class="page-header">
+  <div class="container">
+    <h1 class="title">图书借阅管理系统</h1>
+  </div>
+</header>
+
+<main class="container">
+  <p class="demo-desc">Step 3.0 样式基建 · 组件一览验收页（验收后保留作样式索引，不属于业务功能页；功能页从 3.1 列表页开始）</p>
+
+  <!-- 组件 2：工具区 -->
+  <h2 class="demo-h2">① 工具区（查询 + 新增）</h2>
+  <div class="demo-card">
+    <div class="toolbar">
+      <form class="toolbar-left" onsubmit="return false;">
+        <label for="demo-q">图书名称</label>
+        <input class="form-input" id="demo-q" type="text" placeholder="请输入图书名称">
+        <button class="btn btn-outline" type="submit">查询</button>
+      </form>
+      <div class="toolbar-right">
+        <button class="btn btn-primary" type="button">+ 新增图书</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 组件 3：数据表格（含组件 4 胶囊、操作列文字链接） -->
+  <h2 class="demo-h2">② 数据表格（斑马行 / 悬停高亮 / 胶囊状态 / 操作列）</h2>
+  <p class="demo-desc">表内为示意数据；实际列表按入库时间降序、每页 5 条</p>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>图书编号</th><th>图书分类</th><th>图书名称</th><th>作者</th>
+          <th>出版社</th><th>入库时间</th><th>是否借阅</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>BK00001</td><td>小说</td><td>解忧杂货店</td><td>东野圭吾</td>
+          <td>南海出版公司</td><td>2026-10-11</td>
+          <td><span class="pill pill-green">未借阅</span></td>
+          <td class="ops"><a class="link" href="#">查看</a><a class="link" href="#">修改</a><a class="link link-danger" href="#">删除</a></td>
+        </tr>
+        <tr>
+          <td>BK00002</td><td>科技</td><td>算法图解</td><td>巴尔加瓦</td>
+          <td>清华大学出版社</td><td>2026-10-10</td>
+          <td><span class="pill pill-blue">已借阅</span></td>
+          <td class="ops"><a class="link" href="#">查看</a><a class="link" href="#">修改</a><a class="link link-danger" href="#">删除</a></td>
+        </tr>
+        <tr>
+          <td>BK00003</td><td>文学</td><td>平凡的世界</td><td>路遥</td>
+          <td>作家出版社</td><td>2026-10-09</td>
+          <td><span class="pill pill-green">未借阅</span></td>
+          <td class="ops"><a class="link" href="#">查看</a><a class="link" href="#">修改</a><a class="link link-danger" href="#">删除</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 组件 6：分页条 -->
+  <h2 class="demo-h2">③ 分页条（上一页 / 页码 / 下一页 / 共 X 页 / 跳页）</h2>
+  <div class="demo-card">
+    <nav class="pagination">
+      <a class="page-link disabled" href="#">上一页</a>
+      <a class="page-num is-active" href="#">1</a>
+      <a class="page-num" href="#">2</a>
+      <a class="page-num" href="#">3</a>
+      <a class="page-link" href="#">下一页</a>
+      <span class="page-total">共 3 页</span>
+      <span class="page-jump">到第 <input class="jump-input" type="text" value="1"> 页</span>
+      <button class="btn btn-outline btn-sm" type="button">确定</button>
+    </nav>
+  </div>
+
+  <!-- 组件 5：按钮 -->
+  <h2 class="demo-h2">④ 按钮（主 / 次 / 危险 / 小号）</h2>
+  <div class="demo-card">
+    <div class="demo-row">
+      <button class="btn btn-primary" type="button">主按钮（保存）</button>
+      <button class="btn btn-outline" type="button">次按钮（查询）</button>
+      <button class="btn btn-danger" type="button">危险按钮（删除）</button>
+      <button class="btn btn-outline btn-sm" type="button">小号（跳页确定）</button>
+    </div>
+  </div>
+
+  <!-- 组件 7：表单 -->
+  <h2 class="demo-h2">⑤ 表单控件（label 上置 / 必填星号 / 下拉 / 只读灰底）</h2>
+  <div class="demo-card">
+    <div class="form-grid">
+      <div class="form-item">
+        <label class="form-label" for="d-code">图书编号<span class="required">*</span></label>
+        <input class="form-input" id="d-code" type="text" value="BK00011">
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="d-name">图书名称<span class="required">*</span></label>
+        <input class="form-input" id="d-name" type="text" placeholder="请输入图书名称">
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="d-type">图书分类<span class="required">*</span></label>
+        <select class="form-select" id="d-type">
+          <option value="">请选择</option>
+          <option>小说</option><option>文学</option><option>科技</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="d-borrowed">是否借阅<span class="required">*</span></label>
+        <select class="form-select" id="d-borrowed">
+          <option>未借阅</option><option>已借阅</option>
+        </select>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="d-user">入库人（只读）</label>
+        <input class="form-input" id="d-user" type="text" value="zhy" readonly>
+      </div>
+      <div class="form-item">
+        <label class="form-label" for="d-time">入库时间（只读）</label>
+        <input class="form-input" id="d-time" type="text" value="2026-10-13 16:30" readonly>
+      </div>
+    </div>
+  </div>
+
+  <!-- 组件 8：提示条 -->
+  <h2 class="demo-h2">⑥ 提示条（成功 / 失败）</h2>
+  <div class="demo-card">
+    <div class="alert alert-success">新增成功！（保存后跳回列表页，在页顶显示此提示）</div>
+    <div class="alert alert-error">保存失败：图书名称不能为空，请检查后重新提交。</div>
+  </div>
+
+  <!-- 组件 9：删除确认 -->
+  <h2 class="demo-h2">⑦ 删除确认（浏览器原生 confirm）</h2>
+  <div class="demo-card">
+    <p class="demo-desc" style="margin-bottom: 12px;">点击体验：弹出原生确认框「确定删除该图书信息？」，不自定义弹窗组件（贴合试卷样式）</p>
+    <button class="link link-danger" type="button" onclick="confirm('确定删除该图书信息？')">删除（点我体验）</button>
+  </div>
+
+  <!-- 附：色板 -->
+  <h2 class="demo-h2">附：色板（对应 style.css 中的 CSS 变量）</h2>
+  <div class="demo-card">
+    <div class="demo-row" style="gap: 16px 22px;">
+      <span class="swatch"><i style="background: var(--c-primary)"></i>--c-primary #142D55</span>
+      <span class="swatch"><i style="background: var(--c-primary-2)"></i>--c-primary-2 #1B3864</span>
+      <span class="swatch"><i style="background: var(--c-accent)"></i>--c-accent #FFCB4A</span>
+      <span class="swatch"><i style="background: var(--c-bg)"></i>--c-bg #F5F7FA</span>
+      <span class="swatch"><i style="background: var(--c-thead)"></i>--c-thead #F6F6F6</span>
+      <span class="swatch"><i style="background: var(--c-line)"></i>--c-line #E8EBF0</span>
+      <span class="swatch"><i style="background: var(--c-zebra)"></i>--c-zebra #F8FAFC</span>
+      <span class="swatch"><i style="background: var(--c-success)"></i>--c-success #1DCC88</span>
+      <span class="swatch"><i style="background: var(--c-info)"></i>--c-info #51C0FF</span>
+      <span class="swatch"><i style="background: var(--c-danger)"></i>--c-danger #E5484D</span>
+      <span class="swatch"><i style="background: var(--c-text)"></i>--c-text #1F2329</span>
+      <span class="swatch"><i style="background: var(--c-text-2)"></i>--c-text-2 #8E8E99</span>
+    </div>
+  </div>
+
+  <p class="demo-desc" style="margin-top: 24px;">— 组件一览到此，正式页面从 3.1 列表页开始 —</p>
+</main>
+
+</body>
+</html>
